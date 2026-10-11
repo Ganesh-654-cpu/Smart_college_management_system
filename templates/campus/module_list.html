@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div><a class="back-link" href="{% url 'dashboard' %}">← Dashboard</a><span class="eyebrow">CAMPUS DIRECTORY</span><h1>{{ title }}</h1><p class="muted">Review and manage {{ title|lower }} records.</p></div>
+  {% if can_edit %}<a class="btn primary" href="{% url 'module_create' slug=slug %}">＋ Add record <span>→</span></a>{% endif %}
+</div>
+<form class="search-bar" method="get"><span>⌕</span><input name="q" value="{{ search }}" placeholder="Search {{ title|lower }}…"><button class="btn outline">Search</button></form>
+<div class="panel table-panel"><div class="table-meta"><span>{{ rows|length }} record{{ rows|length|pluralize }} shown</span><span>Secure, role-based campus data</span></div><div class="table-scroll"><table><thead><tr><th>RECORD</th><th>DETAILS</th>{% if can_edit and is_admin %}<th>ACTIONS</th>{% endif %}</tr></thead><tbody>
+{% for row in rows %}<tr><td><span class="record-badge">{{ row.values.0.1|slice:':2'|upper }}</span><b>{{ row.values.0.1|truncatechars:34 }}</b></td><td><div class="detail-stack">{% for label,value in row.values|slice:'1:' %}<span><small>{{ label }}</small>{{ value|truncatechars:46 }}</span>{% endfor %}{% if slug == 'materials' %}<a class="download-link" href="{% url 'download_material' pk=row.download_id %}">Download material ↓</a>{% endif %}</div></td>{% if can_edit and is_admin %}<td class="actions"><a href="{% url 'module_edit' slug=slug pk=row.object.pk %}" title="Edit">Edit</a><a class="danger-link" href="{% url 'module_delete' slug=slug pk=row.object.pk %}" title="Delete">Delete</a></td>{% endif %}</tr>
+{% empty %}<tr><td colspan="3" class="empty-cell"><div class="empty-state-icon">⌕</div><b>No {{ title|lower }} found</b><p>{% if search %}Try a different search term.{% else %}Records will appear here as your college data is added.{% endif %}</p>{% if can_edit and is_admin %}<a class="text-link" href="{% url 'module_create' slug=slug %}">Create the first record →</a>{% endif %}</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

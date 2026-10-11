@@ -1,0 +1,1 @@
+<div class="notice-list">{% for notice in recent_notices %}<article class="notice-item"><span class="notice-dot"></span><div><h3>{{ notice.title }}</h3><p>{{ notice.body|truncatechars:120 }}</p><small>{{ notice.published_at|date:'M j, Y' }} · {{ notice.get_audience_display }}</small></div></article>{% empty %}<div class="empty panel">No notices yet.</div>{% endfor %}</div>
